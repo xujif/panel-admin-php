@@ -47,7 +47,10 @@ class Panel
     {
         foreach ($menuArr as $m) {
             if ($m['children']) {
-                return $this->searchMenu($path, $m['children']);
+                $match = $this->searchMenu($path, $m['children']);
+                if ($match) {
+                    return $match;
+                }
             } else if ($m['path'] === $path) {
                 if (is_callable($m['pageConfig'])) {
                     $m['pageConfig'] = $m['pageConfig']();
@@ -57,7 +60,6 @@ class Panel
         }
         return null;
     }
-
     protected function getSettingDefs()
     {
         return $this->config['settings'];
@@ -111,6 +113,15 @@ class Panel
             case 'modeladmin':
                 $conf = $this->getModelPageConfig($def['model']);
                 return $this->arrayOnly($conf, ['config', 'component']);
+            case 'widget':
+                $conf = $this->getWidgetConfig($def['widget']);
+                if(is_callable($conf['data'])){
+                    $conf['config']['data'] = $conf['data']();
+                }
+                else{
+                    $conf['config']['data'] = $conf['data'];
+                }
+                return $conf;
 
         }
         return null;
@@ -134,7 +145,14 @@ class Panel
         }
         return $result;
     }
-
+    public function getWidgetConfig($name)
+    {
+        if (!isset($this->config['widgets'][$name])) {
+            return null;
+        }
+        $m = $this->config['widgets'][$name];
+        return $m;
+    }
 
     public function getSettings($names)
     {
