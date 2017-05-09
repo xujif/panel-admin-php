@@ -1,0 +1,22 @@
+{
+  "name": "xujif/panel-admin",
+  "description": "panel-admin",
+  "license": "MIT",
+  "keywords": [
+    "xujif panel admin"
+  ],
+  "authors": [
+    {
+      "name": "xujif",
+      "email": "i@xujif.com"
+    }
+  ],
+  "require": {
+
+  },
+  "autoload": {
+    "psr-4": {
+      "Xujif\\PanelAdmin\\": "src/"
+    }
+  }
+}
