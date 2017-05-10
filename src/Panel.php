@@ -36,7 +36,7 @@ class Panel
 
     protected function prepareMenu($menuArr)
     {
-        $arr = $this->arrayOnly($menuArr, ['name', 'path', 'permission']);
+        $arr = $this->arrayOnly($menuArr, ['name', 'path', 'permission', 'opened']);
         if (isset($menuArr['children'])) {
             $arr['children'] = array_map([$this, 'prepareMenu'], $menuArr['children']);
         }
@@ -60,6 +60,7 @@ class Panel
         }
         return null;
     }
+
     protected function getSettingDefs()
     {
         return $this->config['settings'];
@@ -115,10 +116,9 @@ class Panel
                 return $this->arrayOnly($conf, ['config', 'component']);
             case 'widget':
                 $conf = $this->getWidgetConfig($def['widget']);
-                if(is_callable($conf['data'])){
+                if (is_callable($conf['data'])) {
                     $conf['config']['data'] = $conf['data']();
-                }
-                else{
+                } else {
                     $conf['config']['data'] = $conf['data'];
                 }
                 return $conf;
@@ -145,6 +145,7 @@ class Panel
         }
         return $result;
     }
+
     public function getWidgetConfig($name)
     {
         if (!isset($this->config['widgets'][$name])) {
