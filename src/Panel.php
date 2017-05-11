@@ -46,13 +46,13 @@ class Panel
     protected function searchMenu($path, $menuArr)
     {
         foreach ($menuArr as $m) {
-            if ($m['children']) {
+            if (isset($m['children'])) {
                 $match = $this->searchMenu($path, $m['children']);
                 if ($match) {
                     return $match;
                 }
             } else if ($m['path'] === $path) {
-                if (is_callable($m['pageConfig'])) {
+                if (isset($m['pageConfig'])&&is_callable($m['pageConfig'])) {
                     $m['pageConfig'] = $m['pageConfig']();
                 }
                 return $m;
