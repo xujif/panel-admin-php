@@ -143,6 +143,7 @@ class Panel
         if (isset($result['config']['settings']) && !empty($result['config']['settings'])) {
             $result['config']['settings'] = $this->resolveSettings($result['config']['settings']);
         }
+        $result['config']['model'] = $modelName;
         return $result;
     }
 
