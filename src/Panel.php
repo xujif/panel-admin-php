@@ -52,7 +52,7 @@ class Panel
                     return $match;
                 }
             } else if ($m['path'] === $path) {
-                if (isset($m['pageConfig'])&&is_callable($m['pageConfig'])) {
+                if (isset($m['pageConfig']) && is_callable($m['pageConfig'])) {
                     $m['pageConfig'] = $m['pageConfig']();
                 }
                 return $m;
@@ -206,6 +206,19 @@ class Panel
         }
         $m = $this->config['models'][$modelName];
         return $m['updateModel']($pk, $attrs);
+    }
+
+    public function globalActionModel($modelName, $action, $params = null)
+    {
+        if (!isset($this->config['models'][$modelName])) {
+            return null;
+        }
+        $m = $this->config['models'][$modelName];
+        $handles = $m['globalActionHandles'];
+        if (!isset($handles[$action])) {
+            return new \BadMethodCallException('no action: ' . $action . ' defined');
+        }
+        return $handles[$action]($params);
     }
 
     public function createModel($modelName, $attrs)
