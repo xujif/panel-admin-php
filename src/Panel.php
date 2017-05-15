@@ -122,6 +122,14 @@ class Panel
                     $conf['config']['data'] = $conf['data'];
                 }
                 return $conf;
+            case 'iframe':
+            case 'frame':
+                return [
+                    'component' => 'iframe',
+                    'config' => [
+                        'url' => $def['url']
+                    ]
+                ];
 
         }
         return null;
