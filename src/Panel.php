@@ -16,7 +16,11 @@ class Panel
 
     public function __construct($config)
     {
-        $this->config = $config;
+        if (is_callable($config)) {
+            $this->config = $config();
+        } else {
+            $this->config = $config;
+        }
     }
 
     protected function arrayOnly($arr, $keys)
@@ -104,6 +108,16 @@ class Panel
         return $this->updateSettings($values);
     }
 
+    public function getModelConfig($modelName)
+    {
+        $m = $this->config['models'][$modelName];
+        if (is_callable($m)) {
+            return $m();
+        } else {
+            return $m;
+        }
+    }
+
     public function getPageConfig($path)
     {
         $def = $this->getPageDef($path);
@@ -143,10 +157,10 @@ class Panel
 
     public function getModelPageConfig($modelName)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         $result = $this->arrayOnly($m, ['component', 'config']);
         if (isset($result['config']['settings']) && !empty($result['config']['settings'])) {
             $result['config']['settings'] = $this->resolveSettings($result['config']['settings']);
@@ -178,19 +192,19 @@ class Panel
 
     public function listModel($modelName, $params)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         return $m['listModel']($params);
     }
 
     public function actionModel($modelName, $action, $pk, $params = null)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         $handles = $m['actionHandles'];
         if (!isset($handles[$action])) {
             return new \BadMethodCallException('no action: ' . $action . ' defined');
@@ -200,28 +214,28 @@ class Panel
 
     public function getModel($modelName, $pk)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         return $m['getModel']($pk);
     }
 
     public function updateModel($modelName, $pk, $attrs)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         return $m['updateModel']($pk, $attrs);
     }
 
     public function globalActionModel($modelName, $action, $params = null)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         $handles = $m['globalActionHandles'];
         if (!isset($handles[$action])) {
             return new \BadMethodCallException('no action: ' . $action . ' defined');
@@ -231,19 +245,19 @@ class Panel
 
     public function createModel($modelName, $attrs)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         return $m['createModel']($attrs);
     }
 
     public function batchActionModel($modelName, $action, $pkList, $params = null)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         $handles = $m['batchActionHandles'];
         if (!isset($handles[$action])) {
             return new \BadMethodCallException('no action: ' . $action . ' defined');
@@ -253,10 +267,10 @@ class Panel
 
     public function queryModelSelect($modelName, $field, $query)
     {
-        if (!isset($this->config['models'][$modelName])) {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
             return null;
         }
-        $m = $this->config['models'][$modelName];
         return $m['queryModelSelect']($field, $query);
     }
 }
