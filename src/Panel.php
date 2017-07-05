@@ -78,6 +78,8 @@ class Panel
             $setting = $defs[$k];
             if (is_null($setting)) {
                 continue;
+            }else if(is_callable($setting)){
+                $setting = $setting();
             }
             $setting['name'] = $k;
             $result[] = $setting;
