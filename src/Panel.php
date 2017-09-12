@@ -40,7 +40,7 @@ class Panel
 
     protected function prepareMenu($menuArr)
     {
-        $arr = $this->arrayOnly($menuArr, ['name', 'path', 'permission', 'opened']);
+        $arr = $this->arrayOnly($menuArr, ['name', 'path','pageType', 'permission', 'opened']);
         if (isset($menuArr['children'])) {
             $arr['children'] = array_map([$this, 'prepareMenu'], $menuArr['children']);
         }
@@ -198,7 +198,10 @@ class Panel
         if (is_null($m)) {
             return null;
         }
-        return $m['listModel']($params);
+        $result =  $m['listModel']($params);
+        $arrResult = json_decode(json_encode($result),true);
+        $arrResult['draw'] = $params['draw'];
+        return $arrResult;
     }
 
     public function actionModel($modelName, $action, $pk, $params = null)
