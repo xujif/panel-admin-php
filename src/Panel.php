@@ -278,4 +278,13 @@ class Panel
         }
         return $m['queryModelSelect']($field, $query);
     }
+    
+    public function queryModelSettingSelect($modelName, $field, $query)
+    {
+        $m = $this->getModelConfig($modelName);
+        if (is_null($m)) {
+            return null;
+        }
+        return $m['queryModelSelect']($field, $query);
+    }
 }
